@@ -1,0 +1,220 @@
+/* ================= AUTH PAGE ================= */
+
+/* ====== General Layout ====== */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #ffffff, #eaf6ff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ====== Card Container ====== */
+.auth-container {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+/* ====== Heading ====== */
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1c2732;
+}
+
+/* ====== Form ====== */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* ====== Input Field Wrapper ====== */
+.input-wrapper {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.9rem 2.5rem 0.9rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  color: #333;
+  outline: none;
+  transition: border 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+  border-color: #a3d3ff;
+}
+
+/* ====== Eye Icon Button ====== */
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ====== Submit Button ====== */
+.submit-btn {
+  background-color: #0f1625;
+  color: white;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #1a2438;
+}
+
+/* ====== Link Text ====== */
+.auth-form p {
+  text-align: center;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.auth-form span {
+  color: #1a4ce0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ====== Responsive Fix ====== */
+@media (max-width: 480px) {
+  .auth-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .auth-form input {
+    font-size: 0.95rem;
+  }
+
+  .submit-btn {
+    font-size: 0.95rem;
+  }
+}
+
+/* ================= WHITEBOARD PAGE ================= */
+
+.whiteboard-page {
+  height: 100vh;
+  background: linear-gradient(135deg, #f0f4ff, #ffffff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ====== Canvas Container ====== */
+.whiteboard-canvas {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 95%;
+  max-width: 1200px;
+  height: 90vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ====== Canvas ====== */
+.whiteboard-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: none;
+}
+
+/* ====== Custom Cursor ====== */
+.custom-cursor {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #2e6cf6;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  box-shadow: 0 0 6px rgba(46, 108, 246, 0.5);
+  background: rgba(46, 108, 246, 0.1);
+}
+
+/* ================= WHITEBOARD MENU BUTTONS ================= */
+
+.menu-container {
+  position: absolute;
+  top: 0;
+  width: 350px;
+  left: calc(50% - 175px);
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background: #EEEEEE;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.menu_button {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  transition: 0.3s;
+  background: #FFF5DC;
+}
+
+.menu_button:hover {
+  background: #E8D5C4;
+}
+
+.menu_button_active {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background: #E8D5C4;
+}
+
+.menu_icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+
+.cursor {
+  transition: 0.1s;
+}
