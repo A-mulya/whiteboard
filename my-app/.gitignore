@@ -1,23 +1,38 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Node modules
+node_modules/
+server/node_modules/
+my-app/node_modules/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Build outputs
+build/
+dist/
 
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Local environment variables
+.env
+my-app/.env
+server/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Coverage reports
+coverage/
+
+# Cache and temp
+.cache/
+tmp/
+*.swp
+
+# Mac system files
+*.DS_Store
