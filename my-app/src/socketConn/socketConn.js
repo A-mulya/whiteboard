@@ -7,11 +7,11 @@ let socket;
 let mySocketId;
 
 export const connectWithSocketServer = () => {
-  socket = io('http://localhost:3003');
+  socket = io(process.env.REACT_APP_SOCKET_URL); // ✅ Use env variable
 
   socket.on('connect', () => {
     console.log('Connected to socket server');
-    mySocketId = socket.id; // save my id
+    mySocketId = socket.id;
   });
 
   socket.on('whiteboard-state', (elements) => {
@@ -30,7 +30,6 @@ export const connectWithSocketServer = () => {
     store.dispatch(updateCursorPosition(cursorData));
   });
 
-  // 🆕 listen for disconnected users and remove their cursor
   socket.on('user-disconnected', (disconnectedUserId) => {
     store.dispatch(removeCursorPosition(disconnectedUserId));
   });
