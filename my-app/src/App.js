@@ -1,66 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import WhiteBoard from './Whiteboard/Whiteboard';
 import CursorOverlay from './CursorOverlay/CursorOverlay';
-import Login from '../src/pages/login';
-import Register from '../src/pages/register';
-import RegistrationSuccess from '../src/pages/registersucess';
-import LoginSuccess from '../src/pages/loginSuccess';
-import { connectWithSocketServer } from './socketConn/socketConn';
+import Login from './pages/login';
+import Register from './pages/register';
+import RegistrationSuccess from './pages/registersucess';
+import LoginSuccess from './pages/loginSuccess';
+import CreateRoom from './pages/createRoom';
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+function AppWrapper() {
+  const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
-  const [showSuccessPage, setShowSuccessPage] = useState('');
-
-  useEffect(() => {
-    connectWithSocketServer();
-  }, []);
 
   const handleLoginSuccess = () => {
-    setShowSuccessPage('login');
-    // Show success screen, then login
-    setTimeout(() => {
-      setIsLoggedIn(true);
-      setShowSuccessPage('');
-    }, 2000);
+    navigate('/createRoom'); // Only private room path after login
   };
 
   const handleRegisterSuccess = () => {
-    setShowSuccessPage('register');
-    // Show success screen, then switch to login
-    setTimeout(() => {
-      setShowRegister(false);
-      setShowSuccessPage('');
-    }, 2000);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setShowSuccessPage('');
+    navigate('/register-success');
   };
 
   const toggleRegister = () => {
     setShowRegister(prev => !prev);
-    setShowSuccessPage('');
   };
 
-  if (showSuccessPage === 'register') return <RegistrationSuccess />;
-  if (showSuccessPage === 'login') return <LoginSuccess />;
-
-  if (!isLoggedIn) {
-    return showRegister ? (
-      <Register onSuccess={handleRegisterSuccess} onSwitch={toggleRegister} />
-    ) : (
-      <Login onSuccess={handleLoginSuccess} onSwitch={toggleRegister} />
-    );
-  }
-
   return (
-    <>
-      <WhiteBoard onLogout={handleLogout} />
-      <CursorOverlay />
-    </>
+    <Routes>
+      <Route path="/" element={
+        showRegister ? (
+          <Register onSuccess={handleRegisterSuccess} onSwitch={toggleRegister} />
+        ) : (
+          <Login onSuccess={handleLoginSuccess} onSwitch={toggleRegister} />
+        )
+      } />
+
+      <Route path="/createRoom" element={<CreateRoom />} />
+
+      <Route path="/whiteboard/:roomId" element={
+        <>
+          <WhiteBoard />
+          <CursorOverlay />
+        </>
+      } />
+
+      <Route path="/login-success" element={<LoginSuccess />} />
+      <Route path="/register-success" element={<RegistrationSuccess />} />
+    </Routes>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppWrapper />
+    </Router>
+  );
+}

@@ -33,6 +33,3 @@ coverage/
 .cache/
 tmp/
 *.swp
-
-# Mac system files
-*.DS_Store
