@@ -1,28 +1,37 @@
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
-// POST /api/auth/register
+const router = express.Router();
+
+// Test route for debugging
+router.get('/test', (req, res) => res.send('auth works'));
+
+// Register
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: 'Email already exists' });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'Email already registered' });
 
-    const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ username: name, email, password: hashed });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await user.save();
+    const newUser = new User({
+      username: name,
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
     return res.status(201).json({ message: 'User registered successfully' });
-  } catch (err) {
-    console.error('REGISTER ERROR:', err);
-    return res.status(500).json({ message: 'Server error during registration' });
+  } catch (error) {
+    console.error('REGISTER ERROR:', error);
+    return res.status(500).json({ message: 'Registration failed' });
   }
 });
 
-// POST /api/auth/login
+// Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -34,9 +43,9 @@ router.post('/login', async (req, res) => {
     if (!match) return res.status(400).json({ message: 'Invalid email or password' });
 
     return res.status(200).json({ message: 'Login successful' });
-  } catch (err) {
-    console.error('LOGIN ERROR:', err);
-    return res.status(500).json({ message: 'Server error during login' });
+  } catch (error) {
+    console.error('LOGIN ERROR:', error);
+    return res.status(500).json({ message: 'Login failed' });
   }
 });
 
