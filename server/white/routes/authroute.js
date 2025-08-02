@@ -1,37 +1,28 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
-
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const User = require('../models/user'); // Make sure this path & model is correct
 
-// Test route for debugging
-router.get('/test', (req, res) => res.send('auth works'));
-
-// Register
+// POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'Email already registered' });
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: 'Email already exists' });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password, 10);
+    const user = new User({ username: name, email, password: hashed });
 
-    const newUser = new User({
-      username: name,
-      email,
-      password: hashedPassword,
-    });
-
-    await newUser.save();
+    await user.save();
     return res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error('REGISTER ERROR:', error);
-    return res.status(500).json({ message: 'Registration failed' });
+  } catch (err) {
+    console.error('REGISTER ERROR:', err);
+    return res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
-// Login
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -43,9 +34,9 @@ router.post('/login', async (req, res) => {
     if (!match) return res.status(400).json({ message: 'Invalid email or password' });
 
     return res.status(200).json({ message: 'Login successful' });
-  } catch (error) {
-    console.error('LOGIN ERROR:', error);
-    return res.status(500).json({ message: 'Login failed' });
+  } catch (err) {
+    console.error('LOGIN ERROR:', err);
+    return res.status(500).json({ message: 'Server error during login' });
   }
 });
 
