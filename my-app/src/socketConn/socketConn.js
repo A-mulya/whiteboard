@@ -1,4 +1,4 @@
-socketconn.js:
+
 import { io } from 'socket.io-client';
 import { store } from '../store/store';
 import { setElements, updateElement } from '../Whiteboard/whiteboardSlice';

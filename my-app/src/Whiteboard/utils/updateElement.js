@@ -4,20 +4,22 @@ import { store } from '../../store/store';
 import { setElements } from '../whiteboardSlice';
 import { emitElementUpdate } from '../../socketConn/socketConn';
 
+// ✅ Update pencil element when being moved (like drag)
 export const updatePencilElementWhenMoving = ({ index, newPoints }, elements) => {
   const elementsCopy = [...elements];
 
   elementsCopy[index] = {
-    ...elementsCopy[index], 
+    ...elementsCopy[index],
     points: newPoints,
   };
+
   const updatedPencilElement = elementsCopy[index];
+
   store.dispatch(setElements(elementsCopy));
   emitElementUpdate(updatedPencilElement);
 };
 
-
-
+// ✅ Update any element (line, rectangle, pencil, or text)
 export const updateElement = (
   { id, x1, x2, y1, y2, type, index, text },
   elements
@@ -35,7 +37,9 @@ export const updateElement = (
         y2,
         toolType: type,
       });
+
       elementsCopy[index] = updatedElement;
+
       store.dispatch(setElements(elementsCopy));
       emitElementUpdate(updatedElement);
       break;
@@ -46,10 +50,12 @@ export const updateElement = (
         ...elementsCopy[index],
         points: [
           ...elementsCopy[index].points,
-          { x: x2, y: y2 }
-        ]
+          { x: x2, y: y2 },
+        ],
       };
+
       const updatedPencilElement = elementsCopy[index];
+
       store.dispatch(setElements(elementsCopy));
       emitElementUpdate(updatedPencilElement);
       break;
@@ -77,6 +83,7 @@ export const updateElement = (
       };
 
       const updatedTextElement = elementsCopy[index];
+
       store.dispatch(setElements(elementsCopy));
       emitElementUpdate(updatedTextElement);
       break;
