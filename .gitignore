@@ -1,4 +1,4 @@
 # .gitignore
 node_modules/
-server/white/node_modules/
-server/white/.env
+server/node_modules/
+server/.env
