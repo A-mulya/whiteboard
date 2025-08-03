@@ -1,10 +1,14 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const cors = require('cors');
-
 const app = express();
+const http = require('http');
+const cors = require('cors');
+const { Server } = require('socket.io');
+
 const server = http.createServer(app);
+
+app.use(cors());
+
+let elements = [];
 
 const io = new Server(server, {
   cors: {
@@ -13,73 +17,130 @@ const io = new Server(server, {
   },
 });
 
-const roomStates = {};
-
 io.on('connection', (socket) => {
-  console.log('🟢 New client connected:', socket.id);
+  console.log('A user connected:', socket.id);
 
-  socket.on('join-room', (roomId) => {
-    socket.join(roomId);
-    console.log(`🔗 Socket ${socket.id} joined room: ${roomId}`);
+  // send current elements to the newly connected client
+  io.to(socket.id).emit('whiteboard-state', elements);
 
-    if (!roomStates[roomId]) {
-      roomStates[roomId] = [];
-    }
+  // handle element update
+  socket.on('element-update', (elementData) => {
+    updateElementInElements(elementData);
 
-    socket.emit('whiteboard-state', roomStates[roomId]);
+    // broadcast updated element to everyone else
+    socket.broadcast.emit('element-update', elementData);
   });
 
-  socket.on('leave-room', (roomId) => {
-    socket.leave(roomId);
-    console.log(`🚪 Socket ${socket.id} left room: ${roomId}`);
+  // handle whiteboard clear
+  socket.on('clear-whiteboard', () => {
+    elements = [];
+    socket.broadcast.emit('whiteboard-clear');
   });
 
-  socket.on('element-update', ({ roomId, ...elementData }) => {
-    if (!roomId) return;
-
-    const roomElements = roomStates[roomId] || [];
-    const index = roomElements.findIndex(el => el.id === elementData.id);
-
-    if (index !== -1) {
-      roomElements[index] = { ...roomElements[index], ...elementData };
-    } else {
-      roomElements.push(elementData);
-    }
-
-    roomStates[roomId] = roomElements;
-
-    socket.to(roomId).emit('element-update', elementData);
-  });
-
-  socket.on('clear-whiteboard', (roomId) => {
-    if (!roomId) return;
-    roomStates[roomId] = [];
-    io.to(roomId).emit('whiteboard-clear');
-  });
-
-  socket.on('cursor-position', ({ roomId, ...cursorData }) => {
-    if (!roomId) return;
-    socket.to(roomId).emit('cursor-position', {
+  // handle cursor position
+  socket.on('cursor-position', (cursorData) => {
+    socket.broadcast.emit('cursor-position', {
       ...cursorData,
       userId: socket.id,
     });
   });
 
-  socket.on('disconnecting', () => {
-    const rooms = Array.from(socket.rooms);
-    rooms.forEach((roomId) => {
-      if (roomId !== socket.id) {
-        socket.to(roomId).emit('user-disconnected', socket.id);
-      }
-    });
-  });
-
+  // 🔷 NEW: handle disconnect
   socket.on('disconnect', () => {
-    console.log(`🔴 Client disconnected: ${socket.id}`);
+    socket.broadcast.emit('user-disconnected', socket.id);
   });
+});
+
+app.get('/', (req, res) => {
+  res.send('Server is running');
 });
 
 const PORT = process.env.PORT || 3003;
+
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log('Server is running on port ${PORT}');
 });
+
+const updateElementInElements = (elementData) => {
+  const index = elements.findIndex(el => el.id === elementData.id);
+  if (index !== -1) {
+    elements[index] = elementData; // update existingconst express = require('express');
+const http = require('http');
+const cors = require('cors');
+const { Server } = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+
+// Middleware
+app.use(cors());
+
+// In-memory storage for whiteboard elements
+let elements = [];
+
+// Socket.IO server setup
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  // Send current whiteboard state to newly connected client
+  io.to(socket.id).emit('whiteboard-state', elements);
+
+  // Receive and broadcast element updates
+  socket.on('element-update', (elementData) => {
+    updateElementInElements(elementData);
+    socket.broadcast.emit('element-update', elementData);
+  });
+
+  // Handle whiteboard clear event
+  socket.on('clear-whiteboard', () => {
+    elements = [];
+    socket.broadcast.emit('whiteboard-clear');
+  });
+
+  // Broadcast cursor position to others
+  socket.on('cursor-position', (cursorData) => {
+    socket.broadcast.emit('cursor-position', {
+      ...cursorData,
+      userId: socket.id,
+    });
+  });
+
+  // Notify others on disconnect
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('user-disconnected', socket.id);
+  });
+});
+
+// Basic server route
+app.get('/', (req, res) => {
+  res.send('Server is running');
+});
+
+// Start server
+const PORT = process.env.PORT || 3003;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+// Helper: Update or add an element to the array
+const updateElementInElements = (elementData) => {
+  const index = elements.findIndex(el => el.id === elementData.id);
+  if (index !== -1) {
+    elements[index] = elementData; // Update existing element
+  } else {
+    elements.push(elementData); // Add new element
+  }
+};
+
+  } else {
+    elements.push(elementData); // add new
+  }
+};
