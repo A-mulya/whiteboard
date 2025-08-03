@@ -11,13 +11,14 @@ const Login = ({ onSuccess, onSwitch }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(${process.env.REACT_APP_API_URL}/api/auth/login, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
+
       if (res.ok) {
         onSuccess();
       } else {
@@ -34,17 +35,41 @@ const Login = ({ onSuccess, onSwitch }) => {
         <h2>Login</h2>
         <form onSubmit={handleLogin} className="auth-form">
           <div className="input-wrapper">
-            <input type="email" placeholder="Email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
+
           <div className="input-wrapper">
-            <input type={showPassword ? 'text' : 'password'} placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password visibility">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label="Toggle password visibility"
+            >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+
           {error && <p style={{ color: 'red', marginTop: '-10px' }}>{error}</p>}
+
           <button type="submit" className="submit-btn">Login</button>
-          <p>Don’t have an account? <span onClick={onSwitch} className="link-text">Register</span></p>
+
+          <p>
+            Don’t have an account?{' '}
+            <span onClick={onSwitch} className="link-text">Register</span>
+          </p>
         </form>
       </div>
     </div>
