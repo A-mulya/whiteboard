@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import '../../src/index.css'; // ✅ fixed path
 
 const Login = ({ onSuccess, onSwitch }) => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const Login = ({ onSuccess, onSwitch }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
